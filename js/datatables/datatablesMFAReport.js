@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    let searchParams = new URLSearchParams(window.location.search)
+    var todayDate = new Date().toISOString().slice(0, 10);
+    let searchParams = new URLSearchParams(window.location.search);
     var TenantID = '';
     if (searchParams.has('Tenantfilter')) {
-        TenantID = searchParams.get('Tenantfilter')
+         TenantID = searchParams.get('Tenantfilter')
     }
 
-    var todayDate = new Date().toISOString().slice(0, 10);
     if(TenantID !== '') {
         $('.datatable-1').dataTable(
             {
@@ -16,7 +16,8 @@ $(document).ready(function () {
                     }
                 },
                 "columnDefs": [
-                    { "className": "dt-center", "targets": [-1] },
+                    { "className": "dt-center", "targets": [1, 2, 3, 4] },
+                    { "width": "10%", "targets": -1 }
     
                 ],
                 "deferRender": true,
@@ -24,23 +25,22 @@ $(document).ready(function () {
                 responsive: true,
                 "ajax": {
     
-                    "url": "/api/ListMailboxStatistics?Tenantfilter=" + TenantID,
+                    "url": "/api/ListMFAUsers?TenantFilter=" + TenantID,
                     "dataSrc": "",
                 },
                 dom: 'fBlrtip',
                 buttons: [
                     { extend: 'copyHtml5', className: 'btn btn-primary btn-sm' },
-                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate  },
-                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate },
-                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'Mailbox Statistics - ' + TenantID + " - " + todayDate },
+                    { extend: 'excelHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                    { extend: 'csvHtml5', className: 'btn btn-primary btn-sm', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
+                    { extend: 'pdfHtml5', className: 'btn btn-primary btn-sm', orientation: 'landscape', title: 'User List - ' + TenantID + " - " + todayDate, exportOptions: { columns: [0, 1, 2, 3, 4] } },
                 ],
                 "columns": [
                     { "data": "UPN" },
-                    { "data": "displayName" },
-                    { "data": "LastActive" },                
-                    { "data": "UsedGB" },
-                    { "data": "ItemCount" },
-                    { "data": "HasArchive" },
+                    { "data": "PerUser" },
+                    { "data": "MFARegistration" },
+                    { "data": "CoveredByCA" },
+                    { "data": "CoveredBySD" }
                 ],
                 "order": [[0, "asc"]],
             }
